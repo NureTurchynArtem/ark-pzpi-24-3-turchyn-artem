@@ -1,0 +1,1 @@
+# ark-pzpi-24-3-turchyn-artem
