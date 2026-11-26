@@ -1,0 +1,1912 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Перевірити роботу сервера та з’єднання з БД",
+        "tags": [
+          "Стан сервера"
+        ]
+      }
+    },
+    "/api/audit-logs": {
+      "get": {
+        "operationId": "AuditController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер сторінки",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Кількість записів на сторінці",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "Хто виконав операцію",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "entityType",
+            "required": false,
+            "in": "query",
+            "description": "Тип сутності: User, Device, Action",
+            "schema": {
+              "example": "User",
+              "type": "string"
+            }
+          },
+          {
+            "name": "operation",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "USER_CREATED",
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Початок періоду (UTC)",
+            "schema": {
+              "format": "date-time",
+              "example": "2026-11-01T00:00:00Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Кінець періоду (UTC)",
+            "schema": {
+              "format": "date-time",
+              "example": "2026-12-31T23:59:59Z",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Журнал адміністративних змін (фільтри, пагінація)",
+        "tags": [
+          "Журнал аудиту"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Вхід користувача та отримання JWT-токена",
+        "tags": [
+          "Автентифікація"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Профіль поточного користувача",
+        "tags": [
+          "Автентифікація"
+        ]
+      }
+    },
+    "/api/users": {
+      "get": {
+        "operationId": "UsersController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер сторінки",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Кількість записів на сторінці",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "roleId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "isActive",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Пошук за email або ПІБ",
+            "schema": {
+              "example": "мельник",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Список користувачів (фільтри, пагінація)",
+        "tags": [
+          "Користувачі"
+        ]
+      },
+      "post": {
+        "operationId": "UsersController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Створити користувача",
+        "tags": [
+          "Користувачі"
+        ]
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "operationId": "UsersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Користувач за ідентифікатором",
+        "tags": [
+          "Користувачі"
+        ]
+      },
+      "put": {
+        "operationId": "UsersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Оновити дані користувача",
+        "tags": [
+          "Користувачі"
+        ]
+      },
+      "delete": {
+        "operationId": "UsersController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Видалити користувача (без історії сесій)",
+        "tags": [
+          "Користувачі"
+        ]
+      }
+    },
+    "/api/roles": {
+      "get": {
+        "operationId": "RolesController_findAll",
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Довідник ролей користувачів",
+        "tags": [
+          "Ролі"
+        ]
+      }
+    },
+    "/api/devices": {
+      "get": {
+        "operationId": "DevicesController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер сторінки",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Кількість записів на сторінці",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "ownerId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 3,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DeviceStatus"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Пошук за серійним номером або назвою",
+            "schema": {
+              "example": "HB-",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Список апаратних помічників (фільтри, пагінація)",
+        "tags": [
+          "Апаратні помічники"
+        ]
+      },
+      "post": {
+        "operationId": "DevicesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDeviceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Зареєструвати пристрій (відповідь містить ключ пристрою)",
+        "tags": [
+          "Апаратні помічники"
+        ]
+      }
+    },
+    "/api/devices/{id}": {
+      "get": {
+        "operationId": "DevicesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Пристрій за ідентифікатором",
+        "tags": [
+          "Апаратні помічники"
+        ]
+      },
+      "put": {
+        "operationId": "DevicesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDeviceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Оновити пристрій (назва, власник, прошивка)",
+        "tags": [
+          "Апаратні помічники"
+        ]
+      },
+      "delete": {
+        "operationId": "DevicesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Видалити пристрій (без історії подій і сесій)",
+        "tags": [
+          "Апаратні помічники"
+        ]
+      }
+    },
+    "/api/devices/{id}/revoke": {
+      "patch": {
+        "operationId": "DevicesController_revoke",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Відкликати ключ пристрою",
+        "tags": [
+          "Апаратні помічники"
+        ]
+      }
+    },
+    "/api/actions": {
+      "get": {
+        "operationId": "ActionsController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер сторінки",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Кількість записів на сторінці",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "riskLevel",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/RiskLevel"
+            }
+          },
+          {
+            "name": "isEnabled",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "roleId",
+            "required": false,
+            "in": "query",
+            "description": "Лише дії, дозволені цій ролі",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Пошук за кодом або назвою",
+            "schema": {
+              "example": "order",
+              "type": "string"
+            }
+          },
+          {
+            "name": "lang",
+            "required": false,
+            "in": "query",
+            "description": "Мова, за назвою якою сортується список",
+            "schema": {
+              "$ref": "#/components/schemas/Locale"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Каталог дій з параметрами та ролями (фільтри, пагінація)",
+        "tags": [
+          "Каталог дозволених дій"
+        ]
+      },
+      "post": {
+        "operationId": "ActionsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateActionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Створити дію з параметрами",
+        "tags": [
+          "Каталог дозволених дій"
+        ]
+      }
+    },
+    "/api/actions/{id}": {
+      "get": {
+        "operationId": "ActionsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Дія за ідентифікатором",
+        "tags": [
+          "Каталог дозволених дій"
+        ]
+      },
+      "put": {
+        "operationId": "ActionsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateActionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Оновити дію (назви, ризик, доступність, ролі)",
+        "tags": [
+          "Каталог дозволених дій"
+        ]
+      },
+      "delete": {
+        "operationId": "ActionsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Видалити дію (якщо її не використано в командах)",
+        "tags": [
+          "Каталог дозволених дій"
+        ]
+      }
+    },
+    "/api/sessions": {
+      "get": {
+        "operationId": "SessionsController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер сторінки",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Кількість записів на сторінці",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "Ігнорується для ролі OPERATOR",
+            "schema": {
+              "example": 3,
+              "type": "number"
+            }
+          },
+          {
+            "name": "deviceId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "active",
+            "required": false,
+            "in": "query",
+            "description": "true — лише відкриті, false — лише завершені",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Архів сесій (оператор бачить лише власні)",
+        "tags": [
+          "Сесії"
+        ]
+      },
+      "post": {
+        "operationId": "SessionsController_start",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Відкрити сесію поточного користувача",
+        "tags": [
+          "Сесії"
+        ]
+      }
+    },
+    "/api/sessions/{id}": {
+      "get": {
+        "operationId": "SessionsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Сесія з командами",
+        "tags": [
+          "Сесії"
+        ]
+      }
+    },
+    "/api/sessions/{id}/end": {
+      "patch": {
+        "operationId": "SessionsController_end",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Завершити сесію",
+        "tags": [
+          "Сесії"
+        ]
+      }
+    },
+    "/api/commands": {
+      "get": {
+        "operationId": "CommandsController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер сторінки",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Кількість записів на сторінці",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/CommandStatus"
+            }
+          },
+          {
+            "name": "actionId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 2,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sessionId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Створені не раніше (UTC)",
+            "schema": {
+              "format": "date-time",
+              "example": "2026-11-01T00:00:00Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Створені не пізніше (UTC)",
+            "schema": {
+              "format": "date-time",
+              "example": "2026-12-31T23:59:59Z",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Журнал команд (фільтри за станом, дією, сесією, періодом)",
+        "tags": [
+          "Команди"
+        ]
+      },
+      "post": {
+        "operationId": "CommandsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommandDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Команда з таким ключем уже існує — повернуто наявну"
+          },
+          "201": {
+            "description": "Команду створено"
+          },
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Створити команду (ідемпотентно за idempotencyKey)",
+        "tags": [
+          "Команди"
+        ]
+      }
+    },
+    "/api/commands/{id}": {
+      "get": {
+        "operationId": "CommandsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Команда за ідентифікатором",
+        "tags": [
+          "Команди"
+        ]
+      }
+    },
+    "/api/commands/{id}/status": {
+      "patch": {
+        "operationId": "CommandsController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommandStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Змінити стан команди (перевіряються дозволені переходи)",
+        "tags": [
+          "Команди"
+        ]
+      }
+    },
+    "/api/device/events": {
+      "post": {
+        "operationId": "DeviceEventsController_ingestOne",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "401": {
+            "description": "Відсутній, невідомий або відкликаний ключ пристрою"
+          }
+        },
+        "security": [
+          {
+            "device-key": []
+          }
+        ],
+        "summary": "Надіслати одну подію від пристрою",
+        "tags": [
+          "Події пристрою (IoT-клієнт)"
+        ]
+      }
+    },
+    "/api/device/events/batch": {
+      "post": {
+        "operationId": "DeviceEventsController_ingestBatch",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceEventsBatchDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "401": {
+            "description": "Відсутній, невідомий або відкликаний ключ пристрою"
+          }
+        },
+        "security": [
+          {
+            "device-key": []
+          }
+        ],
+        "summary": "Надіслати пакет подій (до 100) з дедуплікацією",
+        "tags": [
+          "Події пристрою (IoT-клієнт)"
+        ]
+      }
+    },
+    "/api/devices/{deviceId}/events": {
+      "get": {
+        "operationId": "DeviceEventsAdminController_findByDevice",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер сторінки",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Кількість записів на сторінці",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DeviceEventType"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "example": "2026-11-01T00:00:00Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "example": "2026-12-31T23:59:59Z",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Відсутній або недійсний JWT-токен"
+          },
+          "403": {
+            "description": "Недостатньо прав для операції"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Журнал подій пристрою (фільтри за типом і періодом)",
+        "tags": [
+          "Апаратні помічники"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Allowed Actions API",
+    "description": "REST API серверної частини програмної системи керування дозволеними діями мобільного застосунку через апаратний помічник",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      },
+      "device-key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Device-Key"
+      }
+    },
+    "schemas": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "admin@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Admin123!"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "Locale": {
+        "type": "string",
+        "enum": [
+          "uk",
+          "en"
+        ]
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "new.operator@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Operator123!",
+            "minLength": 8
+          },
+          "fullName": {
+            "type": "string",
+            "example": "Петро Іваненко"
+          },
+          "roleId": {
+            "type": "number",
+            "example": 1,
+            "description": "Ідентифікатор ролі (див. GET /api/roles)"
+          },
+          "locale": {
+            "default": "uk",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Locale"
+              }
+            ]
+          },
+          "timeZone": {
+            "type": "string",
+            "example": "Europe/Kyiv",
+            "default": "Europe/Kyiv"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "fullName",
+          "roleId"
+        ]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "example": "Петро Іваненко"
+          },
+          "roleId": {
+            "type": "number",
+            "example": 1
+          },
+          "locale": {
+            "example": "en",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Locale"
+              }
+            ]
+          },
+          "timeZone": {
+            "type": "string",
+            "example": "Europe/London"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "fullName",
+          "roleId",
+          "locale",
+          "timeZone",
+          "isActive"
+        ]
+      },
+      "DeviceStatus": {
+        "type": "string",
+        "enum": [
+          "ACTIVE",
+          "REVOKED"
+        ]
+      },
+      "CreateDeviceDto": {
+        "type": "object",
+        "properties": {
+          "serialNumber": {
+            "type": "string",
+            "example": "HB-0003",
+            "description": "Серійний номер: великі латинські літери, цифри, дефіс"
+          },
+          "name": {
+            "type": "string",
+            "example": "Помічник складу №2"
+          },
+          "ownerId": {
+            "type": "number",
+            "example": 3,
+            "description": "Користувач, за яким закріплено пристрій"
+          },
+          "firmwareVersion": {
+            "type": "string",
+            "example": "1.0.0"
+          }
+        },
+        "required": [
+          "serialNumber",
+          "name"
+        ]
+      },
+      "UpdateDeviceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Помічник складу №1 (зміна Б)"
+          },
+          "ownerId": {
+            "type": "object",
+            "example": 3,
+            "nullable": true
+          },
+          "firmwareVersion": {
+            "type": "object",
+            "example": "1.1.0",
+            "nullable": true
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "RiskLevel": {
+        "type": "string",
+        "enum": [
+          "LOW",
+          "MEDIUM",
+          "HIGH"
+        ]
+      },
+      "ParameterType": {
+        "type": "string",
+        "enum": [
+          "INTEGER",
+          "NUMBER",
+          "STRING",
+          "BOOLEAN"
+        ]
+      },
+      "ActionParameterDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "quantity",
+            "description": "Код параметра (латиниця, camelCase)"
+          },
+          "nameUk": {
+            "type": "string",
+            "example": "Кількість"
+          },
+          "nameEn": {
+            "type": "string",
+            "example": "Quantity"
+          },
+          "type": {
+            "example": "INTEGER",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ParameterType"
+              }
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "example": "pcs",
+            "description": "Одиниця вимірювання"
+          },
+          "minValue": {
+            "type": "number",
+            "example": 1
+          },
+          "maxValue": {
+            "type": "number",
+            "example": 500
+          },
+          "isRequired": {
+            "type": "boolean",
+            "example": true,
+            "default": true
+          }
+        },
+        "required": [
+          "code",
+          "nameUk",
+          "nameEn",
+          "type"
+        ]
+      },
+      "CreateActionDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "stock.write_off",
+            "description": "Унікальний код дії (латиниця, крапка — роздільник)"
+          },
+          "nameUk": {
+            "type": "string",
+            "example": "Списати товар"
+          },
+          "nameEn": {
+            "type": "string",
+            "example": "Write off item"
+          },
+          "riskLevel": {
+            "example": "HIGH",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RiskLevel"
+              }
+            ]
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "example": true,
+            "default": true
+          },
+          "roleIds": {
+            "example": [
+              1,
+              3
+            ],
+            "description": "Ролі, яким дозволено виконувати дію",
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActionParameterDto"
+            }
+          }
+        },
+        "required": [
+          "code",
+          "nameUk",
+          "nameEn",
+          "riskLevel",
+          "roleIds",
+          "parameters"
+        ]
+      },
+      "UpdateActionDto": {
+        "type": "object",
+        "properties": {
+          "nameUk": {
+            "type": "string",
+            "example": "Списати пошкоджений товар"
+          },
+          "nameEn": {
+            "type": "string",
+            "example": "Write off damaged item"
+          },
+          "riskLevel": {
+            "example": "HIGH",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RiskLevel"
+              }
+            ]
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "example": false
+          },
+          "roleIds": {
+            "example": [
+              3
+            ],
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "nameUk",
+          "nameEn",
+          "riskLevel",
+          "isEnabled",
+          "roleIds"
+        ]
+      },
+      "CreateSessionDto": {
+        "type": "object",
+        "properties": {
+          "deviceId": {
+            "type": "number",
+            "example": 1,
+            "description": "Апаратний помічник, через який працює користувач"
+          }
+        }
+      },
+      "CommandStatus": {
+        "type": "string",
+        "enum": [
+          "CREATED",
+          "PENDING_CONFIRMATION",
+          "CONFIRMED",
+          "DISPATCHED",
+          "EXECUTED",
+          "FAILED",
+          "CANCELLED",
+          "EXPIRED"
+        ]
+      },
+      "CommandParameterValueDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "quantity"
+          },
+          "value": {
+            "type": "string",
+            "example": "12",
+            "description": "Значення у текстовому вигляді"
+          }
+        },
+        "required": [
+          "code",
+          "value"
+        ]
+      },
+      "CreateCommandDto": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "number",
+            "example": 2,
+            "description": "Відкрита сесія поточного користувача"
+          },
+          "actionId": {
+            "type": "number",
+            "example": 2,
+            "description": "Дія з каталогу (наприклад, stock.set_quantity)"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "example": "demo-cmd-0001",
+            "description": "Ключ ідемпотентності, унікальний для команди"
+          },
+          "requestText": {
+            "type": "string",
+            "example": "зміни кількість SKU-778 на дванадцять"
+          },
+          "parameters": {
+            "example": [
+              {
+                "code": "sku",
+                "value": "SKU-778"
+              },
+              {
+                "code": "quantity",
+                "value": "12"
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommandParameterValueDto"
+            }
+          }
+        },
+        "required": [
+          "sessionId",
+          "actionId",
+          "idempotencyKey",
+          "parameters"
+        ]
+      },
+      "UpdateCommandStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "example": "CONFIRMED",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommandStatus"
+              }
+            ]
+          },
+          "resultCode": {
+            "type": "string",
+            "example": "OK",
+            "description": "Код результату від мобільного застосунку"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "DeviceEventType": {
+        "type": "string",
+        "enum": [
+          "BUTTON_SHORT",
+          "BUTTON_DOUBLE",
+          "BUTTON_LONG",
+          "TOUCH_TAP",
+          "TOUCH_HOLD",
+          "ENCODER_TURN",
+          "COMMAND_RESULT"
+        ]
+      },
+      "DeviceEventDto": {
+        "type": "object",
+        "properties": {
+          "eventUid": {
+            "type": "string",
+            "example": "HB-0001-000006",
+            "description": "Унікальний ідентифікатор події на пристрої"
+          },
+          "seq": {
+            "type": "number",
+            "example": 6,
+            "description": "Порядковий номер події (лічильник пристрою)"
+          },
+          "type": {
+            "example": "BUTTON_SHORT",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeviceEventType"
+              }
+            ]
+          },
+          "value": {
+            "type": "number",
+            "example": 2,
+            "description": "Кроки енкодера, тривалість утримання (мс) або код результату"
+          },
+          "commandId": {
+            "type": "number",
+            "example": 1,
+            "description": "Команда, до якої належить подія"
+          },
+          "occurredAt": {
+            "type": "string",
+            "example": "2026-11-22T09:15:00.000Z",
+            "description": "Час події на пристрої (UTC, ISO 8601)"
+          }
+        },
+        "required": [
+          "eventUid",
+          "seq",
+          "type",
+          "occurredAt"
+        ]
+      },
+      "DeviceEventsBatchDto": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeviceEventDto"
+            }
+          }
+        },
+        "required": [
+          "events"
+        ]
+      }
+    }
+  }
+}

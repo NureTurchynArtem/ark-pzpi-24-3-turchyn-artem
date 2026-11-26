@@ -1,0 +1,29 @@
+# PostgreSQL для серверної частини та Adminer для перегляду бази даних у браузері
+services:
+  db:
+    image: postgres:16
+    container_name: allowed-actions-db
+    environment:
+      POSTGRES_USER: helper
+      POSTGRES_PASSWORD: helper
+      POSTGRES_DB: allowed_actions
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U helper -d allowed_actions"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  adminer:
+    image: adminer
+    container_name: allowed-actions-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  db-data:

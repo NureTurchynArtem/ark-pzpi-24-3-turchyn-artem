@@ -1,0 +1,44 @@
+{
+  "name": "allowed-actions-api",
+  "version": "1.0.0",
+  "description": "Серверна частина програмної системи керування дозволеними діями мобільного застосунку через апаратний помічник",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "nest build",
+    "start": "node dist/main",
+    "start:dev": "nest start --watch",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.mjs\"",
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/database/data-source.ts",
+    "db:migrate": "typeorm-ts-node-commonjs migration:run -d src/database/data-source.ts",
+    "db:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/data-source.ts",
+    "db:drop": "typeorm-ts-node-commonjs schema:drop -d src/database/data-source.ts",
+    "db:seed": "ts-node src/database/seeds/seed.ts",
+    "db:reset": "npm run db:drop && npm run db:migrate && npm run db:seed",
+    "test:api": "node test/api-check.mjs"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.2.11",
+    "@nestjs/core": "^11.2.11",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/platform-express": "^11.2.11",
+    "@nestjs/swagger": "^11.4.8",
+    "@nestjs/typeorm": "^11.0.3",
+    "bcryptjs": "^3.0.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "dotenv": "^16.6.1",
+    "pg": "^8.23.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "typeorm": "^0.3.31"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.24",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.5",
+    "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
